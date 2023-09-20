@@ -1,0 +1,49 @@
+{% extends 'main/base.html' %}
+    {% block content %}
+        <div class="position-relative overflow-hidden p-3 p-md-5 m-md-3 text-center bg-body-tertiary">
+        <div class="col-md-6 p-lg-5 mx-auto my-5">
+          <h1 class="display-3 fw-bold">
+            Сервис рассылок MailMe
+            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="" class="icon_down" viewBox="0 0 16 16">
+                  <path d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1zm0-1a8 8 0 1 1 0 16A8 8 0 0 1 8 0z"/>
+                  <path d="M4.285 6.433a.5.5 0 0 0 .683-.183A3.498 3.498 0 0 1 8 4.5c1.295 0 2.426.703 3.032 1.75a.5.5 0 0 0 .866-.5A4.498 4.498 0 0 0 8 3.5a4.5 4.5 0 0 0-3.898 2.25.5.5 0 0 0 .183.683zM7 9.5C7 8.672 6.552 8 6 8s-1 .672-1 1.5.448 1.5 1 1.5 1-.672 1-1.5zm4 0c0-.828-.448-1.5-1-1.5s-1 .672-1 1.5.448 1.5 1 1.5 1-.672 1-1.5z"/>
+            </svg>
+          </h1>
+          <h3 class="fw-normal text-muted mb-3">Создавайте любые Email рассылки за считанные минуты на нашем сайте, делитесь контентом и привлекайте больше клиентов.</h3>
+              {% if user.is_authenticated %}
+                <a href="{% url 'user:mail_create' %}" type="button" class="btn btn-success"><h3>Хочу создать рассылку</h3></a>
+              {% else %}
+                <a href="{% url 'user:user_create' %}" type="button" class="btn btn-success"><h3>Хочу создать рассылку</h3></a>
+              {% endif %}
+        </div>
+        <div class="product-device shadow-sm d-none d-md-block"></div>
+        <div class="product-device product-device-2 shadow-sm d-none d-md-block"></div>
+          <div class="d-md-flex flex-md-equal w-100 my-md-3 ps-md-3">
+            <div class="text-bg-success me-md-3 pt-3 px-3 pt-md-5 px-md-5 text-center overflow-hidden">
+                <div class="container-fluid">
+                <h3 class="display-5">Эффективный маркетинг</h3>
+                {% for blog in blog_list %}
+                    <div class="card shadow-sm">
+                    <div class="card-header">
+                        <h1>{{ blog.title }}</h1>
+                    <div class="card-body">
+                        {{ blog.body }}
+                    </div>
+                    </div>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+
+      <div class="d-md-flex flex-md-equal w-100 my-md-3 ps-md-3">
+        <div class="text-bg-success me-md-3 pt-3 px-3 pt-md-5 px-md-5 text-center overflow-hidden">
+          <div class="my-3 py-3">
+            <h3 class="display-5">Посмотреть список рассылок</h3>
+          </div>
+            <h1><a href="#" class="btn btn-outline-light btn-lg" type="button">Посмотреть</a></h1>
+            <img src="media/general/foto.png"  style="width: 80%; height: 300px; border-radius: 21px 21px 0 0;">
+        </div>
+      </div>
+      </div>
+      </div>
+{% endblock %}

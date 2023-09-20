@@ -1,0 +1,13 @@
+{% extends 'main/base.html' %}
+  {% block content %}
+        <div class="card border-danger mb-3 " style="max-width: 18rem;">
+        <form method='post'>
+            {% csrf_token %}
+            <div class="card-header">Вы точно хотите удалить рассылку  "{{ object.subject }}</div>
+            <div class="card-body text-danger">
+                <button type="submit" class="btn btn-warning"> Подтвердить </button>
+                <a href="{% url 'user:mail_list' %}" class="btn btn-danger"> Отменить </a>
+            </div>
+        </form>
+    </div>
+{% endblock %}

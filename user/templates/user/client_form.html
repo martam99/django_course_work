@@ -1,0 +1,23 @@
+{% extends 'main/base.html' %}
+    {% block content %}
+      <form class="row" method="post">
+          <div class="card h-100">
+            <div class="card-header">
+                {% if object %}
+                    <h2>Редактировать Клиента для отправки рассылок</h2>
+                    <div class="card-body">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="btn btn-success">Сохранить</button>
+                {% else %}
+                    <h2>Добавить Клиента для отправки рассылок</h2>
+                    <div class="card-body">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="btn btn-success">Сохранить</button>
+                {% endif %}
+                </div>
+            </div>
+          </div>
+      </form>
+    {% endblock %}

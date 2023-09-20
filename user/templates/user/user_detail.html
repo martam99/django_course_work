@@ -1,0 +1,28 @@
+{% extends 'main/base.html' %}
+{% block content %}
+            <div class="card-right">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        Профиль пользователя {{object.fullname}}
+                    </h3>
+                <div class="card-body">
+                    <table class="table">
+                        <tr>
+                            <td>Имя</td>
+                            <td>{{object.fullname}}</td>
+                        </tr>
+                        <tr>
+                            <td>Почта</td>
+                            <td>{{object.email}}</td>
+                        </tr>
+                    </table>
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'user:user_update' object.pk %}" type="button" class="btn btn-sm btn-outline-secondary">Редактировать</a>
+                        <a href="{% url 'user:user_delete' object.pk %}" type="button" class="btn btn-sm btn-outline-danger">Удалить профиль</a>
+                    {% else %}
+                        <a href="{% url 'user:user_list' %}" type="button" class="btn btn-sm btn-outline-danger">Назад</a>
+                    {% endif %}
+                </div>
+            </div>
+            </div>
+{% endblock %}

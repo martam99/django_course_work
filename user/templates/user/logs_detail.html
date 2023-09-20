@@ -1,0 +1,22 @@
+{% extends 'main/base.html' %}
+{% block content %}
+            <div class="card-right">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        {{object.status}}
+                    </h3>
+                <div class="card-body">
+                    <table class="table">
+                        <tr>
+                            <td>Имя</td>
+                            <td>{{object.date_end}}</td>
+                        </tr>
+                        <tr>
+                            <td>Почта</td>
+                            <td>{{object.client}}</td>
+                        </tr>
+                    </table>
+            </div>
+            </div>
+            </div>
+{% endblock %}

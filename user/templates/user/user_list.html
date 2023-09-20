@@ -1,0 +1,12 @@
+{% extends 'main/base.html' %}
+    {% block content %}
+      {% for object in object_list %}
+          <div class="card shadow-sm">
+            <div class="card-body">
+              <p class="card-text">
+                {{object}}
+              </p>
+              </div>
+            </div>
+  {% endfor %}
+{% endblock %}
