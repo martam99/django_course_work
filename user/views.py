@@ -16,6 +16,7 @@ from user.models import User, Logs, Client, Mailing
 class UserCreateView(CreateView):
     model = User
     form_class = UserCreation
+
     # template_name = 'main/user_form.html'
     # success_url = reverse_lazy('main:login')
 
@@ -63,11 +64,6 @@ class UserDeleteView(DeleteView):
     success_url = reverse_lazy('main:general')
 
 
-class LogsDetailView(DetailView):
-    model = Logs
-    template_name = 'user:logs_detail.html'
-
-
 class ClientCreateView(CreateView):
     model = Client
     form_class = ClientForm
@@ -100,7 +96,7 @@ class ClientDeleteView(DeleteView):
 class MailCreateView(CreateView):
     model = Mailing
     form_class = MailingCreation
-    template_name = 'mailing/mailing_form.html'
+    template_name = 'user/mailing_form.html'
     success_url = reverse_lazy('user:mail_create')
 
     def form_valid(self, form):
@@ -137,3 +133,8 @@ class MailUpdateView(UpdateView):
 class MailDeleteView(DeleteView):
     model = Mailing
     success_url = reverse_lazy('user:mail_list')
+
+
+class LogsDetailView(DetailView):
+    model = Logs
+    template_name = 'user:logs_detail.html'

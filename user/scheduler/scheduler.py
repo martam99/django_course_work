@@ -3,8 +3,8 @@ import schedule as schedule
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.cron import CronTrigger
 
-from mailing.models import Mailing
-from mailing.views import MailCreateView
+from user.models import Mailing
+from user.views import MailCreateView
 
 
 def my_job():

@@ -11,13 +11,13 @@ class StyleFormMixin:
             field.widget.attrs['class'] = 'form-control'
 
 
-class UserCreation(UserCreationForm):
+class UserCreation(StyleFormMixin, UserCreationForm):
     class Meta:
         model = User
         fields = ('fullname', 'email', 'password1', 'password2', 'avatar')
 
 
-class UserUpdateForm(UserChangeForm):
+class UserUpdateForm(StyleFormMixin, UserChangeForm):
     class Meta:
         model = User
         fields = ('email', 'fullname', 'comment', 'avatar')
@@ -27,25 +27,25 @@ class UserUpdateForm(UserChangeForm):
         self.fields['password'].widget = forms.HiddenInput()
 
 
-class ClientForm(forms.ModelForm):
+class ClientForm(StyleFormMixin, forms.ModelForm):
     class Meta:
         model = Client
         fields = ('mail',)
 
 
-class ClientUpdateForm(forms.ModelForm):
+class ClientUpdateForm(StyleFormMixin, forms.ModelForm):
     class Meta:
         model = Client
         fields = ('mail',)
 
 
-class MailingCreation(forms.ModelForm):
+class MailingCreation(StyleFormMixin, forms.ModelForm):
     class Meta:
         model = Mailing
         fields = ('subject', 'body', 'published_time', 'period', 'status', 'client')
 
 
-class MailingUpdate(forms.ModelForm):
+class MailingUpdate(StyleFormMixin, forms.ModelForm):
     class Meta:
         model = Mailing
         fields = ('subject', 'body', 'period', 'client', 'status')

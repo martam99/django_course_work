@@ -1,3 +1,4 @@
+import traceback
 from datetime import datetime
 
 from django.contrib.auth.models import AbstractUser
@@ -5,6 +6,7 @@ from django.db import models
 
 from blog.models import Blog
 from config import settings
+from user.views import MailCreateView
 
 # Create your models here.
 NULLABLE = {'blank': True, 'null': True}
@@ -84,3 +86,29 @@ class Logs(models.Model):
     mailing = models.CharField(max_length=150, verbose_name='Рассылка, которая отправлялась')
     error_msg = models.TextField(verbose_name='Ответ сервера')
     mailings = models.OneToOneField(Mailing, on_delete=models.CASCADE)
+
+    # @property
+    # def statuses(self):
+    #     if MailCreateView.form_valid is True:
+    #         return 'Успешно'
+    #
+    # @property
+    # def date(self):
+    #     return Mailing.objects.all().order_by("published_time").last()
+    #
+    # @property
+    # def clients(self):
+    #     return Mailing.objects.all().order_by('client')
+    #
+    # @property
+    # def mail(self):
+    #     return Mailing.objects.all().order_by('subject')
+    #
+    # @property
+    # def error(self):
+    #     if MailCreateView.form_valid == 'SMTPException':
+    #         return 'Ошибка:\n', traceback.format_exc()
+    #     else:
+    #         return 'Успешно'
+
+

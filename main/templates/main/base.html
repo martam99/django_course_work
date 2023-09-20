@@ -257,75 +257,74 @@
   </div>
 </nav>
 
-  {% if user.is_authenticated %}
-  <main class="container-fluid">
-    <div class="row">
-      <div class="col-2">
-        <div class="d-flex flex-column flex-shrink-0 p-3 text-bg-dark" style="width: 280px;">
-          <img class="avatar" width="250" height="180"
-               src="{{ user.avatar|mediapath }}"/>
-      <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
-        <svg class="bi pe-none me-2" width="40" height="32"><use xlink:href="#bootstrap"/></svg>
-        <span class="fluid"><h2>{{ user.fullname }}</h2></span>
-      </a>
-          <p>Почта: {{ user.email }}</p>
-      <hr>
-      <ul class="nav nav-pills flex-column mb-auto">
-        <li>
-          <a href="{% url 'user:client_create' %}" class="nav-link text-white">
-            <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#table"/></svg>
-            Добавить клиента
-          </a>
-        </li>
-        <li>
-          <a href="{% url 'user:client_list' %}" class="nav-link text-white">
-            <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#table"/></svg>
-            Список клиентов
-          </a>
-        </li>
-        <li>
-          <a href="{% url 'user:mail_create' %}" class="nav-link text-white">
-            <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#table"/></svg>
-            Создать рассылку
-          </a>
-        </li>
-        <li>
-          <a href="{% url 'user:mail_list' %}" class="nav-link text-white">
-            <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#table"/></svg>
-            Список рассылок
-          </a>
-        </li>
-        <li>
-          <a href="{% url 'user:user_update' user.pk %}" class="nav-link text-white">
-            <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#table"/></svg>
-            Редактировать профиль
-          </a>
-        </li>
-        <li>
-          <a href="{% url 'user:user_delete' user.pk %}" class="nav-link text-white">
-            <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#table"/></svg>
-            Удалить профиль
-          </a>
-        </li>
-        <li>
-          <a href="{% url 'user:logout' %}" class="nav-link text-white">
-            <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#table"/></svg>
-            Выйти
-          </a>
-        </li>
-      </ul>
-    {% endif %}
-    </div>
-    </div>
+{% if user.is_authenticated %}
+<main class="container-fluid">
+  <div class="row">
+    <div class="col-2">
+      <div class="d-flex flex-column flex-shrink-0 p-3 text-bg-dark" style="width: 280px;">
+        <img class="avatar" width="250" height="180"
+             src="{{ user.avatar|mediapath }}"/>
+    <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+      <svg class="bi pe-none me-2" width="40" height="32"><use xlink:href="#bootstrap"/></svg>
+      <span class="fluid"><h2>{{ user.fullname }}</h2></span>
+    </a>
+        <p>Почта: {{ user.email }}</p>
+    <hr>
+    <ul class="nav nav-pills flex-column mb-auto">
+      <li>
+        <a href="{% url 'user:client_create' %}" class="nav-link text-white">
+          <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#table"/></svg>
+          Добавить клиента
+        </a>
+      </li>
+      <li>
+        <a href="{% url 'user:client_list' %}" class="nav-link text-white">
+          <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#table"/></svg>
+          Список клиентов
+        </a>
+      </li>
+      <li>
+        <a href="{% url 'user:mail_create' %}" class="nav-link text-white">
+          <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#table"/></svg>
+          Создать рассылку
+        </a>
+      </li>
+      <li>
+        <a href="{% url 'user:mail_list' %}" class="nav-link text-white">
+          <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#table"/></svg>
+          Список рассылок
+        </a>
+      </li>
+      <li>
+        <a href="{% url 'user:user_update' user.pk %}" class="nav-link text-white">
+          <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#table"/></svg>
+          Редактировать профиль
+        </a>
+      </li>
+      <li>
+        <a href="{% url 'user:user_delete' user.pk %}" class="nav-link text-white">
+          <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#table"/></svg>
+          Удалить профиль
+        </a>
+      </li>
+      <li>
+        <a href="{% url 'user:logout' %}" class="nav-link text-white">
+          <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#table"/></svg>
+          Выйти
+        </a>
+      </li>
+    </ul>
+  {% endif %}
+  </div>
+  </div>
     <div class="container margin-left">
-    <div class="col">
+      <div class="col">
         {% block content %}
         {% endblock %}
+      </div>
     </div>
-    </div>
-    </div>
+  </div>
 </main>
-
 
 <footer class="container py-5">
   <div class="row">
