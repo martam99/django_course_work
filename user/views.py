@@ -2,6 +2,7 @@ import traceback
 from smtplib import SMTPException
 
 from django.core.mail import send_mail
+from django.http import Http404
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, UpdateView, ListView, DetailView, DeleteView
 
@@ -16,9 +17,8 @@ from user.models import User, Logs, Client, Mailing
 class UserCreateView(CreateView):
     model = User
     form_class = UserCreation
-
-    # template_name = 'main/user_form.html'
-    # success_url = reverse_lazy('main:login')
+    template_name = 'user/user_form.html'
+    success_url = reverse_lazy('user:login')
 
     def form_valid(self, form):
         new_user = form.save()
@@ -37,22 +37,22 @@ class UserUpdateView(UpdateView):
     template_name = 'user/user_form.html'
     success_url = reverse_lazy('main:general')
 
-    def form_valid(self, form):
-        self.object = form.save()
-        self.object.user = self.request.user
-        self.object.user.save()
-
-        return super().form_valid(form)
+    # def form_valid(self, form):
+    #     self.object = form.save()
+    #     self.object.user = self.request.user
+    #     self.object.user.save()
+    #
+    #     return super().form_valid(form)
 
 
 class UserListView(ListView):
     model = User
 
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        if not self.request.user.is_staff:
-            queryset = queryset.filter(user=self.request.email)
-        return queryset
+    # def get_queryset(self):
+    #     queryset = super().get_queryset()
+    #     if not self.request.user.is_staff:
+    #         raise Http404
+    #     return queryset
 
 
 class UserDetailView(DetailView):
@@ -81,11 +81,8 @@ class ClientUpdateView(UpdateView):
 class ClientListView(ListView):
     model = Client
 
-    def get_queryset(self):
-        qs = super().get_queryset()
-        if not self.request.user.is_staff:
-            qs = qs.filter(owner=self.request.user)
-        return qs
+    # def get_queryset(self):
+    #     return super().get_queryset().filter(owner_id=self.kwargs.get('pk'), owner=self.request.user)
 
 
 class ClientDeleteView(DeleteView):
@@ -109,25 +106,48 @@ class MailCreateView(CreateView):
                 recipient_list=[mail.client],
                 fail_silently=False
             )
-        except SMTPException:
-            print('Ошибка:\n', traceback.format_exc())
-        return super().form_valid(form)
+            Logs.objects.create(
+                status='Успешно',
+                date_end=Mailing.published_time,
+                client=Mailing.client,
+                mailing=Mailing.subject,
+                error_msg='no error'
+            )
+        except SMTPException as err:
+            Logs.objects.create(
+                status='Ошибка',
+                date_end=Mailing.published_time,
+                client=Mailing.client,
+                mailing=Mailing.subject,
+                error_msg=err
+            )
+            return super().form_valid(form)
 
 
 class MailListView(ListView):
     model = Mailing
 
-    def get_queryset(self):
-        qs = super().get_queryset()
-        if not self.request.user.is_staff:
-            qs = qs.filter(owner=self.request.user)
-        return qs
+    # def get_queryset(self):
+    #     queryset = super().get_queryset()
+    #     if self.object.owner != self.request.user and not self.request.user.is_staff:
+    #         raise Http404
+    #     return queryset
 
 
 class MailUpdateView(UpdateView):
     model = Mailing
     form_class = MailingUpdate
-    # success_url = reverse_lazy('main:general')
+    success_url = reverse_lazy('main:general')
+
+    # def get_queryset(self):
+    #     queryset = super().get_queryset()
+    #     if self.object.owner != self.request.user and not self.request.user.is_staff:
+    #         raise Http404
+    #     return queryset
+
+
+class MailDetailView(DetailView):
+    model = Mailing
 
 
 class MailDeleteView(DeleteView):
@@ -137,4 +157,4 @@ class MailDeleteView(DeleteView):
 
 class LogsDetailView(DetailView):
     model = Logs
-    template_name = 'user:logs_detail.html'
+    template_name = 'user/logs_detail.html'

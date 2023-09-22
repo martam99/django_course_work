@@ -10,7 +10,8 @@
                 <div class="btn-group">
                   {% if user.is_authenticated %}
                     <a href="{% url 'user:mail_update' object.pk %}" type="button" class="btn btn-outline-primary">Редактировать</a>
-                    <a href="{% url 'user:logs_view' object.pk %}" type="button" class="btn btn-primary">Посмотреть логи</a>
+                    <a href="{% url 'user:log_view' object.pk %}" type="button" class="btn btn-primary">Посмотреть логи</a>
+                    <a href="{% url 'user:mail_detail' object.pk %}" type="button" class="btn btn-primary">Посмотреть рассылку</a>
                     <a href="{% url 'user:mail_delete' object.pk %}" type="button" class="btn btn-outline-danger">Удалить</a>
                   {% else %}
                     <a href="#" type="button" class="btn btn-outline-danger">{{ object.subject }}</a>

@@ -1,0 +1,26 @@
+{% extends 'main/base.html' %}
+{% block content %}
+            <div class="card-right">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        Рассылка «{{object.subject}}»
+                    </h3>
+                <div class="card-body">
+                    <table class="table">
+                        <tr>
+                            <td>Кому отправлено</td>
+                            <td>{{object.client}}</td>
+                        </tr>
+                        <tr>
+                            <td>Период</td>
+                            <td>{{object.period}}</td>
+                        </tr>
+                        <tr>
+                            <td>Дата публикации</td>
+                            <td>{{object.published_time}}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            </div>
+{% endblock %}

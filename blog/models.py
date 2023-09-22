@@ -3,13 +3,7 @@ from datetime import datetime
 from django.db import models
 
 
-# В сущность блога добавьте следующие поля:
-#
-# заголовок,
-# содержимое статьи,
-# изображение,
-# количество просмотров,
-# дата публикации.
+NULLABLE = {'blank': True, 'null': True}
 
 
 # Create your models here.
@@ -18,7 +12,7 @@ class Blog(models.Model):
     body = models.TextField(verbose_name='Содержимое блога')
     published_date = models.DateTimeField(verbose_name='дата публикации.', default=datetime.now)
     view_count = models.IntegerField(default=0, verbose_name='количество просмотров.')
-    image = models.ImageField(upload_to='blog/', verbose_name='изображение.')
+    image = models.ImageField(upload_to='blog/', verbose_name='изображение.', **NULLABLE)
 
     def __str__(self):
         return f'{self.title} {self.body}'
