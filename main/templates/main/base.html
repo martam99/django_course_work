@@ -258,9 +258,8 @@
 </nav>
 
 {% if user.is_authenticated %}
-<main class="container-fluid">
   <div class="row">
-    <div class="col-2">
+    <div class="col">
       <div class="d-flex flex-column flex-shrink-0 p-3 text-bg-dark" style="width: 280px;">
         <img class="avatar" width="250" height="180"
              src="{{ user.avatar|mediapath }}"/>
@@ -317,14 +316,13 @@
   {% endif %}
   </div>
   </div>
-    <div class="container margin-left: 100px">
-      <div class="col">
+    <div class="col-9">
+      <div class="container margin-left: 100px">
         {% block content %}
         {% endblock %}
       </div>
     </div>
   </div>
-</main>
 
 <footer class="container py-5">
   <div class="row">

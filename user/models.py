@@ -3,6 +3,8 @@ from datetime import datetime
 
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.utils import timezone
+from django.utils.timezone import now
 
 from blog.models import Blog
 from config import settings
@@ -18,6 +20,7 @@ class User(AbstractUser):
     comment = models.TextField(verbose_name='комментарий', **NULLABLE)
     avatar = models.ImageField(upload_to='user/', verbose_name='фото', default='no avatar')
     blog = models.ForeignKey(Blog, on_delete=models.SET_NULL, **NULLABLE, verbose_name='Блог')
+    is_active = models.BooleanField(default=True, verbose_name='activity')
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
@@ -27,7 +30,7 @@ class Client(models.Model):
     fullname = models.CharField(max_length=150, verbose_name='ФИО', **NULLABLE)
     mail = models.EmailField(max_length=150, verbose_name='Почта', unique=True)
     comment = models.TextField(verbose_name='комментарий', **NULLABLE)
-    owner = models.ForeignKey(User, on_delete=models.CASCADE, **NULLABLE, verbose_name='Пользователь')
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Пользователь', **NULLABLE)
 
     def __str__(self):
         return self.mail
@@ -79,15 +82,15 @@ class Logs(models.Model):
         (STATUS_FAILED, 'Ошибка'),
     )
 
-    status = models.CharField(max_length=20, choices=STATUSES, verbose_name='статус'),
-    date_end = models.DateTimeField(verbose_name='дата и время последней попытки', **NULLABLE),
-    client = models.EmailField(max_length=150, verbose_name='Почта клиента', **NULLABLE),
+    status = models.CharField(max_length=20, choices=STATUSES, verbose_name='статус', default='Успешно')
+    date_end = models.DateTimeField(verbose_name='дата и время последней попытки', auto_now_add=True)
+    client = models.EmailField(max_length=150, verbose_name='Почта клиента', **NULLABLE)
     mailing = models.CharField(max_length=150, verbose_name='Рассылка, которая отправлялась', **NULLABLE)
     error_msg = models.TextField(verbose_name='Ответ сервера', **NULLABLE)
     mailings = models.OneToOneField(Mailing, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f'{self.status}  {self.date_end}, {self.client} {self.mailing} {self.error_msg}'
+        return f'{self.status} {self.client} {self.mailing} {self.error_msg}'
 
     class Meta:
         verbose_name = 'Лог'

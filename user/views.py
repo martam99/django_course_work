@@ -1,11 +1,10 @@
-import traceback
 from smtplib import SMTPException
-
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.mail import send_mail
 from django.http import Http404
-from django.urls import reverse_lazy
+from django.shortcuts import get_object_or_404, redirect
+from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView, UpdateView, ListView, DetailView, DeleteView
-
 from config import settings
 from user.form import UserUpdateForm, UserCreation, ClientForm, ClientUpdateForm, MailingUpdate, MailingCreation
 from user.models import User, Logs, Client, Mailing
@@ -37,22 +36,15 @@ class UserUpdateView(UpdateView):
     template_name = 'user/user_form.html'
     success_url = reverse_lazy('main:general')
 
-    # def form_valid(self, form):
-    #     self.object = form.save()
-    #     self.object.user = self.request.user
-    #     self.object.user.save()
-    #
-    #     return super().form_valid(form)
 
-
-class UserListView(ListView):
+class UserListView(LoginRequiredMixin, ListView):
     model = User
 
-    # def get_queryset(self):
-    #     queryset = super().get_queryset()
-    #     if not self.request.user.is_staff:
-    #         raise Http404
-    #     return queryset
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        if self.request.user.is_staff:
+            return queryset
+        raise Http404('У вас нет прав для просмотра списка пользователей данного сервиса.')
 
 
 class UserDetailView(DetailView):
@@ -80,9 +72,11 @@ class ClientUpdateView(UpdateView):
 
 class ClientListView(ListView):
     model = Client
+    template_name = 'user/client_list.html'
 
-    # def get_queryset(self):
-    #     return super().get_queryset().filter(owner_id=self.kwargs.get('pk'), owner=self.request.user)
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset.filter(owner=self.request.user)
 
 
 class ClientDeleteView(DeleteView):
@@ -127,11 +121,9 @@ class MailCreateView(CreateView):
 class MailListView(ListView):
     model = Mailing
 
-    # def get_queryset(self):
-    #     queryset = super().get_queryset()
-    #     if self.object.owner != self.request.user and not self.request.user.is_staff:
-    #         raise Http404
-    #     return queryset
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset.filter(owner=self.request.user)
 
 
 class MailUpdateView(UpdateView):
@@ -139,11 +131,11 @@ class MailUpdateView(UpdateView):
     form_class = MailingUpdate
     success_url = reverse_lazy('main:general')
 
-    # def get_queryset(self):
-    #     queryset = super().get_queryset()
-    #     if self.object.owner != self.request.user and not self.request.user.is_staff:
-    #         raise Http404
-    #     return queryset
+    def get_object(self, queryset=None):
+        self.object = super().get_object(queryset)
+        if self.object.owner != self.request.user:
+            raise Http404
+        return queryset
 
 
 class MailDetailView(DetailView):
@@ -158,3 +150,13 @@ class MailDeleteView(DeleteView):
 class LogsDetailView(DetailView):
     model = Logs
     template_name = 'user/logs_detail.html'
+
+
+def toggle_activity(request, pk):
+    user = get_object_or_404(User, pk=pk)
+    if user.is_active:
+        user.is_active = False
+    else:
+        user.is_active = True
+    user.save()
+    return redirect(reverse('user:user_list'))

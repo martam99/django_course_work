@@ -6,6 +6,15 @@
               <p class="card-text">
                 {{object}}
               </p>
+                {% if user.is_staff and object.is_active %}
+                    <div class="card-footer">
+                        <a class="btn btn-warning" href="{% url 'user:toggle_activity' object.pk %}">Деактивировать</a>
+                    </div>
+                {% elif user.is_staff and not object.is_active %}
+                    <div class="card-footer">
+                        <a class="btn btn-success" href="{% url 'user:toggle_activity' object.pk %}">Активировать</a>
+                    </div>
+                {% endif %}
               </div>
             </div>
   {% endfor %}

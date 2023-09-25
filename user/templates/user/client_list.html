@@ -7,11 +7,9 @@
                 {{object}}
               </p>
               <div class="d-flex justify-content-between align-items-center">
-              {% if user.is_staff %}
                 <div class="btn-group">
                     <a href="{% url 'user:client_update' object.pk %}" type="button" class="btn btn-outline-primary">Редактировать</a>
                     <a href="{% url 'user:client_delete' object.pk %}" type="button" class="btn btn-outline-danger">Удалить</a>
-              {% endif %}
                 </div>
               </div>
             </div>
