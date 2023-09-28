@@ -1,7 +1,5 @@
 from apscheduler.schedulers.background import BackgroundScheduler
 from django_apscheduler.jobstores import DjangoJobStore
-from django.utils import timezone
-from django_apscheduler.models import DjangoJobExecution
 import sys
 
 from user.models import Mailing

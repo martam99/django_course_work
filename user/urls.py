@@ -1,5 +1,6 @@
 from django.contrib.auth.views import LoginView, LogoutView
 from django.urls import path
+from django.views.decorators.cache import cache_page
 
 from user.apps import UserConfig
 from user.views import UserListView, UserDetailView, UserCreateView, UserUpdateView, UserDeleteView, LogsDetailView, \

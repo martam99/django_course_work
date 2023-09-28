@@ -1,12 +1,14 @@
-from smtplib import SMTPException
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.cache import cache
 from django.core.mail import send_mail
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView, UpdateView, ListView, DetailView, DeleteView
 from config import settings
+from config.settings import CACHE_ENABLED
 from user.form import UserUpdateForm, UserCreation, ClientForm, ClientUpdateForm, MailingUpdate, MailingCreation
+from user.services import send_mailing
 from user.models import User, Logs, Client, Mailing
 
 
@@ -90,6 +92,17 @@ class ClientListView(ListView):
         queryset = super().get_queryset()
         return queryset.filter(owner=self.request.user)
 
+    def cache_example(self):
+        if CACHE_ENABLED:
+            key = f'client_list'
+            client_list = cache.get(key)
+            if client_list is None:
+                client_list = self.objects.all()
+                cache.set(key, client_list)
+            else:
+                client_list = Client.objects.all()
+            return client_list
+
 
 class ClientDeleteView(DeleteView):
     model = Client
@@ -106,6 +119,7 @@ class MailCreateView(CreateView):
         self.object = form.save()
         self.object.owner = self.request.user
         self.object.save()
+        send_mailing(Mailing.subject, Mailing.body, Mailing.client, Mailing())
         return super().form_valid(form)
 
 
@@ -127,7 +141,7 @@ class MailUpdateView(UpdateView):
     def get_object(self, queryset=None):
         self.object = super().get_object(queryset)
         if self.object.owner != self.request.user:
-            raise Http404
+            raise Http404('У вас нет прав для редактирования данной рассылки')
         return queryset
 
 
@@ -142,8 +156,8 @@ class MailDeleteView(DeleteView):
     def get_object(self, queryset=None):
         self.object = super().get_object(queryset)
         if self.object.owner != self.request.user:
-            raise Http404
-        return queryset
+            raise Http404('У вас нет прав для удаления данной рассылки')
+        return self.object
 
 
 class LogsDetailView(DetailView):
