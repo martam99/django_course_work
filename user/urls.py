@@ -4,7 +4,7 @@ from django.urls import path
 from user.apps import UserConfig
 from user.views import UserListView, UserDetailView, UserCreateView, UserUpdateView, UserDeleteView, LogsDetailView, \
     ClientCreateView, ClientUpdateView, ClientListView, ClientDeleteView, MailCreateView, MailListView, MailDeleteView, \
-    MailUpdateView, MailDetailView, toggle_activity
+    MailUpdateView, MailDetailView, toggle_activity, mailing_activity, LogsListView
 
 app_name = UserConfig.name
 
@@ -25,6 +25,8 @@ urlpatterns = [
     path('mail_delete/<int:pk>/', MailDeleteView.as_view(), name='mail_delete'),
     path('mail_update/<int:pk>/', MailUpdateView.as_view(), name='mail_update'),
     path('mail_detail/<int:pk>/', MailDetailView.as_view(), name='mail_detail'),
-    path('log_view/<int:pk>', LogsDetailView.as_view(), name='log_view'),
+    path('log_view/<int:pk>/', LogsDetailView.as_view(), name='log_view'),
+    path('log_list', LogsListView.as_view(), name='logs_list'),
     path('activity/<int:pk>/', toggle_activity, name='toggle_activity'),
+    path('mail_activity/<int:pk>/', mailing_activity, name='mailing_activity'),
 ]

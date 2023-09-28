@@ -1,5 +1,5 @@
 from smtplib import SMTPException
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.core.mail import send_mail
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect
@@ -19,6 +19,9 @@ class UserCreateView(CreateView):
     template_name = 'user/user_form.html'
     success_url = reverse_lazy('user:login')
 
+    def get_object(self, queryset=None):
+        return self.request.user
+
     def form_valid(self, form):
         new_user = form.save()
         send_mail(
@@ -35,6 +38,9 @@ class UserUpdateView(UpdateView):
     form_class = UserUpdateForm
     template_name = 'user/user_form.html'
     success_url = reverse_lazy('main:general')
+
+    def get_object(self, queryset=None):
+        return self.request.user
 
 
 class UserListView(LoginRequiredMixin, ListView):
@@ -61,6 +67,12 @@ class ClientCreateView(CreateView):
     form_class = ClientForm
     template_name = 'user/client_form.html'
     success_url = reverse_lazy('main:general')
+
+    def form_valid(self, form):
+        self.object = form.save()
+        self.object.owner = self.request.user
+        self.object.save()
+        return super().form_valid(form)
 
 
 class ClientUpdateView(UpdateView):
@@ -91,31 +103,10 @@ class MailCreateView(CreateView):
     success_url = reverse_lazy('user:mail_create')
 
     def form_valid(self, form):
-        mail = form.save()
-        try:
-            send_mail(
-                subject=mail.subject,
-                message=mail.body,
-                from_email=settings.EMAIL_HOST_USER,
-                recipient_list=[mail.client],
-                fail_silently=False
-            )
-            Logs.objects.create(
-                status='Успешно',
-                date_end=Mailing.published_time,
-                client=Mailing.client,
-                mailing=Mailing.subject,
-                error_msg='no error'
-            )
-        except SMTPException as err:
-            Logs.objects.create(
-                status='Ошибка',
-                date_end=Mailing.published_time,
-                client=Mailing.client,
-                mailing=Mailing.subject,
-                error_msg=err
-            )
-            return super().form_valid(form)
+        self.object = form.save()
+        self.object.owner = self.request.user
+        self.object.save()
+        return super().form_valid(form)
 
 
 class MailListView(ListView):
@@ -123,7 +114,9 @@ class MailListView(ListView):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        return queryset.filter(owner=self.request.user)
+        if self.request.user.is_staff or Mailing.owner == self.request.user:
+            return queryset
+        raise Http404
 
 
 class MailUpdateView(UpdateView):
@@ -146,10 +139,19 @@ class MailDeleteView(DeleteView):
     model = Mailing
     success_url = reverse_lazy('user:mail_list')
 
+    def get_object(self, queryset=None):
+        self.object = super().get_object(queryset)
+        if self.object.owner != self.request.user:
+            raise Http404
+        return queryset
+
 
 class LogsDetailView(DetailView):
     model = Logs
-    template_name = 'user/logs_detail.html'
+
+
+class LogsListView(ListView):
+    model = Logs
 
 
 def toggle_activity(request, pk):
@@ -160,3 +162,13 @@ def toggle_activity(request, pk):
         user.is_active = True
     user.save()
     return redirect(reverse('user:user_list'))
+
+
+def mailing_activity(request, pk):
+    mailing = get_object_or_404(Mailing, pk=pk)
+    if mailing.status:
+        mailing.status = False
+    else:
+        mailing.status = True
+    mailing.save()
+    return redirect(reverse('user:mail_list'))

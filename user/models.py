@@ -1,6 +1,7 @@
 import traceback
 from datetime import datetime
 
+from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils import timezone
@@ -22,6 +23,8 @@ class User(AbstractUser):
     blog = models.ForeignKey(Blog, on_delete=models.SET_NULL, **NULLABLE, verbose_name='Блог')
     is_active = models.BooleanField(default=True, verbose_name='activity')
 
+    objects = BaseUserManager()
+
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
 
@@ -31,6 +34,8 @@ class Client(models.Model):
     mail = models.EmailField(max_length=150, verbose_name='Почта', unique=True)
     comment = models.TextField(verbose_name='комментарий', **NULLABLE)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Пользователь', **NULLABLE)
+
+    objects = models.Manager()
 
     def __str__(self):
         return self.mail
@@ -50,27 +55,19 @@ class Mailing(models.Model):
         (PERIOD_WEEKLY, 'Раз в неделю'),
     )
 
-    STATUS_CREATED = 'created'
-    STATUS_STARTED = 'started'
-    STATUS_DONE = 'done'
-    STATUSES = (
-        (STATUS_STARTED, 'Запущена'),
-        (STATUS_CREATED, 'Создана'),
-
-        (STATUS_DONE, 'Завершена'),
-    )
-
     published_time = models.DateTimeField(verbose_name='время', default=datetime.now())
     period = models.CharField(max_length=20, verbose_name='период', choices=PERIODS)
-    status = models.CharField(max_length=20, verbose_name='статус', choices=STATUSES)
+    status = models.BooleanField(max_length=20, verbose_name='Запустить', default=False)
     subject = models.CharField(max_length=200, verbose_name='тема письма', default='Без темы')
     body = models.TextField(verbose_name='тело письма')
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, **NULLABLE,
                               verbose_name='Пользователь')
     client = models.ForeignKey(Client, on_delete=models.SET_NULL, **NULLABLE, verbose_name='Клиент')
 
+    objects = models.Manager()
+
     def __str__(self):
-        return f'{self.subject}'
+        return f'{self.subject}, {self.client}, {self.owner} {self.period}'
 
 
 class Logs(models.Model):
@@ -88,6 +85,8 @@ class Logs(models.Model):
     mailing = models.CharField(max_length=150, verbose_name='Рассылка, которая отправлялась', **NULLABLE)
     error_msg = models.TextField(verbose_name='Ответ сервера', **NULLABLE)
     mailings = models.OneToOneField(Mailing, on_delete=models.CASCADE)
+
+    objects = models.Manager()
 
     def __str__(self):
         return f'{self.status} {self.client} {self.mailing} {self.error_msg}'

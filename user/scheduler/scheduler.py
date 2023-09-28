@@ -15,7 +15,7 @@ def my_job():
 def start():
     scheduler = BackgroundScheduler()
     scheduler.add_jobstore(DjangoJobStore(), "default")
-    if Mailing.STATUSES == 'STATUS_STARTED':
+    if Mailing.status:
         if Mailing.PERIODS == 'PERIOD_HOURLY':
             return scheduler.add_job(my_job, 'interval', hours=1,  name='send_mailings', jobstore='default')
         elif Mailing.PERIODS == 'PERIOD_DAILY':
@@ -24,5 +24,5 @@ def start():
             return scheduler.add_job(my_job, 'interval', hours=168, name='send_mailings', jobstore='default')
         scheduler.start()
         print("Scheduler started...", file=sys.stdout)
-    elif Mailing.STATUSES == 'STATUS_DONE':
+    else:
         scheduler.pause()

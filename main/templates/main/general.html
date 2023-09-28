@@ -1,4 +1,6 @@
 {% extends 'main/base.html' %}
+{% load mail_count %}
+{% load mail_active %}
     {% block content %}
         <div class="position-relative overflow-hidden p-3 p-md-5 m-md-3 text-center bg-body-tertiary">
         <div class="col-md-6 p-lg-5 mx-auto my-5">
@@ -44,6 +46,20 @@
             <img src="media/general/foto.png"  style="width: 80%; height: 300px; border-radius: 21px 21px 0 0;">
         </div>
       </div>
+      <div class="d-md-flex flex-md-equal w-100 my-md-3 ps-md-3">
+        <div class="text-bg-success me-md-3 pt-3 px-3 pt-md-5 px-md-5 text-center overflow-hidden">
+          <div class="my-3 py-3">
+            <h3 class="display-5">Количество рассылок всего։ {{ mail_counts }}</h3>
+          </div>
+        </div>
+      </div>
+      <div class="d-md-flex flex-md-equal w-100 my-md-3 ps-md-3">
+        <div class="text-bg-success me-md-3 pt-3 px-3 pt-md-5 px-md-5 text-center overflow-hidden">
+        <div class="my-3 py-3">
+        <h3 class="display-5">Количество активных рассылок։ {{ active_mail_counts }}</h3>
+        </div>
+          </div>
+          </div>
       </div>
       </div>
 {% endblock %}

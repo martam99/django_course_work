@@ -39,10 +39,16 @@ class ClientUpdateForm(StyleFormMixin, forms.ModelForm):
         fields = ('mail',)
 
 
-class MailingCreation(StyleFormMixin, forms.ModelForm):
+class MailingCreation(forms.ModelForm):
     class Meta:
         model = Mailing
         fields = ('subject', 'body', 'published_time', 'period', 'status', 'client')
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            if field_name != 'status':
+                field.widget.attrs['class'] = 'form-control'
 
 
 class MailingUpdate(StyleFormMixin, forms.ModelForm):
