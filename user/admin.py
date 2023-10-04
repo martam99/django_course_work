@@ -13,9 +13,9 @@ class ClientAdmin(admin.ModelAdmin):
 
 @admin.register(Mailing)
 class MailingAdmin(admin.ModelAdmin):
-    list_display = ('published_time', 'period', 'status', 'subject', 'body', 'owner', 'client')
+    list_display = ('published_time', 'period', 'status', 'subject', 'body', 'owner')
 
 
 @admin.register(Logs)
-class ClientAdmin(admin.ModelAdmin):
+class LogsAdmin(admin.ModelAdmin):
     list_display = ('status', 'mailing', 'error_msg')

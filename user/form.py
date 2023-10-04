@@ -42,7 +42,7 @@ class ClientUpdateForm(StyleFormMixin, forms.ModelForm):
 class MailingCreation(forms.ModelForm):
     class Meta:
         model = Mailing
-        fields = ('subject', 'body', 'published_time', 'period', 'status', 'client')
+        fields = ('subject', 'body', 'published_time', 'end_time', 'period', 'status', 'client')
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

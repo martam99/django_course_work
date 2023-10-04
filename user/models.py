@@ -1,14 +1,9 @@
-import traceback
 from datetime import datetime
-
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-from django.utils import timezone
-from django.utils.timezone import now
-
 from blog.models import Blog
-from config import settings
+from django.conf import settings
 
 # Create your models here.
 NULLABLE = {'blank': True, 'null': True}
@@ -38,7 +33,7 @@ class Client(models.Model):
     objects = models.Manager()
 
     def __str__(self):
-        return self.mail
+        return f'{self.mail}'
 
     class Meta:
         verbose_name = 'client'
@@ -55,14 +50,15 @@ class Mailing(models.Model):
         (PERIOD_WEEKLY, 'Раз в неделю'),
     )
 
-    published_time = models.DateTimeField(verbose_name='время', default=datetime.now())
+    published_time = models.DateTimeField(verbose_name='время создания рассылки', default=datetime.now())
+    end_time = models.DateTimeField(verbose_name='время окончания рассылки в формате «Д.М.Г Ч:М:С»', **NULLABLE)
     period = models.CharField(max_length=20, verbose_name='период', choices=PERIODS)
     status = models.BooleanField(max_length=20, verbose_name='Запустить', default=False)
     subject = models.CharField(max_length=200, verbose_name='тема письма', default='Без темы')
     body = models.TextField(verbose_name='тело письма')
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, **NULLABLE,
                               verbose_name='Пользователь')
-    client = models.ForeignKey(Client, on_delete=models.SET_NULL, **NULLABLE, verbose_name='Клиент')
+    client = models.ManyToManyField(Client, verbose_name='Клиент')
 
     objects = models.Manager()
 
@@ -84,7 +80,7 @@ class Logs(models.Model):
     client = models.EmailField(max_length=150, verbose_name='Почта клиента', **NULLABLE)
     mailing = models.CharField(max_length=150, verbose_name='Рассылка, которая отправлялась', **NULLABLE)
     error_msg = models.TextField(verbose_name='Ответ сервера', **NULLABLE)
-    mailings = models.OneToOneField(Mailing, on_delete=models.CASCADE)
+    mailings = models.ForeignKey(Mailing, on_delete=models.CASCADE)
 
     objects = models.Manager()
 
@@ -94,4 +90,3 @@ class Logs(models.Model):
     class Meta:
         verbose_name = 'Лог'
         verbose_name_plural = 'Логи'
-

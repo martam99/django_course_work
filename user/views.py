@@ -5,7 +5,7 @@ from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView, UpdateView, ListView, DetailView, DeleteView
-from config import settings
+from django.conf import settings
 from config.settings import CACHE_ENABLED
 from user.form import UserUpdateForm, UserCreation, ClientForm, ClientUpdateForm, MailingUpdate, MailingCreation
 from user.services import send_mailing
@@ -119,18 +119,18 @@ class MailCreateView(CreateView):
         self.object = form.save()
         self.object.owner = self.request.user
         self.object.save()
-        send_mailing(Mailing.subject, Mailing.body, Mailing.client, Mailing())
+        send_mailing(self.object)
         return super().form_valid(form)
 
 
 class MailListView(ListView):
     model = Mailing
 
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        if self.request.user.is_staff or Mailing.owner == self.request.user:
-            return queryset
-        raise Http404
+    # def get_queryset(self):
+    #     queryset = super().get_queryset()
+    #     if self.request.user.is_staff or Mailing.owner == self.request.user:
+    #         return queryset
+    #     raise Http404
 
 
 class MailUpdateView(UpdateView):

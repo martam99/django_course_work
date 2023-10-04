@@ -1,25 +1,25 @@
 {% extends 'main/base.html' %}
 {% block content %}
-            <div class="card-right">
-                <div class="card-body">
-                    <table class="table">
-                        <tr>
-                            <td>Время отправки</td>
-                            <td>{{object.date_end}}</td>
-                        </tr>
-                        <tr>
-                            <td>Почта клиента</td>
-                            <td>{{object.client}}</td>
-                        </tr>
-                        <tr>
-                            <td>Отправленное письмо</td>
-                            <td>{{object.mailing}}</td>
-                        </tr>
-                        <tr>
-                            <td>Ответ сервера</td>
-                            <td>{{object.error_msg}}</td>
-                        </tr>
-                    </table>
-            </div>
-            </div>
+    <div class="card">
+        <div class="card-body">
+            <table class="table">
+                <tr>
+                    <td>Время отправки</td>
+                    <td>{{ object.date_end }}</td>
+                </tr>
+                <tr>
+                    <td>Почта клиента</td>
+                    <td>{{ object.client }}</td>
+                </tr>
+                <tr>
+                    <td>Отправленное письмо</td>
+                    <td>{{ object.mailing }}</td>
+                </tr>
+                <tr>
+                    <td>Ответ сервера</td>
+                    <td>{{ object.error_msg }}</td>
+                </tr>
+            </table>
+    </div>
+    </div>
 {% endblock %}

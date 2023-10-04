@@ -1,32 +1,35 @@
 from smtplib import SMTPException
-
 from django.core.mail import send_mail
-
-from config import settings
 from user.models import Logs
+from django.conf import settings
 
 
-def send_mailing(subject, body, client, mail):
+def send_mailing(mailing):
     try:
         send_mail(
-            subject=subject,
-            message=body,
+            subject=mailing.subject,
+            message=mailing.body,
             from_email=settings.EMAIL_HOST_USER,
-            recipient_list=[client],
+            recipient_list=[mailing.client],
             fail_silently=False
         )
-        Logs.objects.create(
+        log = Logs.objects.create(
             status=True,
-            client=mail.client,
-            mailing=mail.subject,
-            mailings=mail
+            client=mailing.client,
+            mailing=mailing.subject,
+            mailings=mailing,
+            date_end=mailing.published_time
         )
+        log.save()
+        return log
     except SMTPException as err:
-        Logs.objects.create(
+        log = Logs.objects.create(
             status=False,
-            client=mail.client,
-            mailing=mail.subject,
-            mailings=mail,
+            client=mailing.client,
+            mailing=mailing.subject,
+            mailings=mailing,
+            date_end=mailing.published_time,
             error_msg=err
         )
-
+        log.save()
+        return log
