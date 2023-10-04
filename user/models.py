@@ -2,6 +2,8 @@ from datetime import datetime
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.utils import timezone
+
 from blog.models import Blog
 from django.conf import settings
 
@@ -50,7 +52,7 @@ class Mailing(models.Model):
         (PERIOD_WEEKLY, 'Раз в неделю'),
     )
 
-    published_time = models.DateTimeField(verbose_name='время создания рассылки', default=datetime.now())
+    published_time = models.DateTimeField(verbose_name='время создания рассылки', default=timezone.now())
     end_time = models.DateTimeField(verbose_name='время окончания рассылки в формате «Д.М.Г Ч:М:С»', **NULLABLE)
     period = models.CharField(max_length=20, verbose_name='период', choices=PERIODS)
     status = models.BooleanField(max_length=20, verbose_name='Запустить', default=False)

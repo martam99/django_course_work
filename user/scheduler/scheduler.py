@@ -1,5 +1,6 @@
 from datetime import datetime
 from apscheduler.schedulers.background import BackgroundScheduler
+from django.utils import timezone
 from django_apscheduler.jobstores import DjangoJobStore
 import sys
 from user.models import Mailing
@@ -26,5 +27,5 @@ def start():
     elif Mailing.status is False:
         scheduler.pause()
 
-    if Mailing.end_time == datetime.now():
+    if Mailing.end_time == timezone.now():
         scheduler.pause_job(my_job())
