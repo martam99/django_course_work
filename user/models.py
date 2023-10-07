@@ -25,6 +25,12 @@ class User(AbstractUser):
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
 
+    class Meta:
+        permissions = [(
+            'set_is_active',
+            'Can block users'
+        )]
+
 
 class Client(models.Model):
     fullname = models.CharField(max_length=150, verbose_name='ФИО', **NULLABLE)
@@ -58,7 +64,7 @@ class Mailing(models.Model):
     status = models.BooleanField(max_length=20, verbose_name='Запустить', default=False)
     subject = models.CharField(max_length=200, verbose_name='тема письма', default='Без темы')
     body = models.TextField(verbose_name='тело письма')
-    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, **NULLABLE,
+    owner = models.ForeignKey(User, on_delete=models.SET_NULL, **NULLABLE,
                               verbose_name='Пользователь')
     client = models.ManyToManyField(Client, verbose_name='Клиент')
 
@@ -66,6 +72,12 @@ class Mailing(models.Model):
 
     def __str__(self):
         return f'{self.subject}, {self.client}, {self.owner} {self.period}'
+
+    class Meta:
+        permissions = [(
+            'set_status',
+            'can cancel mailing'
+        )]
 
 
 class Logs(models.Model):

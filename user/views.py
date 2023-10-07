@@ -6,15 +6,14 @@ from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView, UpdateView, ListView, DetailView, DeleteView
 from django.conf import settings
-from config.settings import CACHE_ENABLED
+from config.settings import CACHE_ENABLED, AUTH_USER_MODEL
 from user.form import UserUpdateForm, UserCreation, ClientForm, ClientUpdateForm, MailingUpdate, MailingCreation
 from user.services import send_mailing
 from user.models import User, Logs, Client, Mailing
+from user.utils import is_manager
 
 
 # Create your views here.
-
-
 class UserCreateView(CreateView):
     model = User
     form_class = UserCreation
@@ -50,7 +49,7 @@ class UserListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        if self.request.user.is_staff:
+        if is_manager(self.request.user):
             return queryset
         raise Http404('У вас нет прав для просмотра списка пользователей данного сервиса.')
 
@@ -113,7 +112,7 @@ class MailCreateView(CreateView):
     model = Mailing
     form_class = MailingCreation
     template_name = 'user/mailing_form.html'
-    success_url = reverse_lazy('user:mail_create')
+    success_url = reverse_lazy('user:mail_list')
 
     def form_valid(self, form):
         self.object = form.save()
@@ -125,12 +124,17 @@ class MailCreateView(CreateView):
 
 class MailListView(ListView):
     model = Mailing
+    template_name = 'user/mailing_list.html'
 
-    # def get_queryset(self):
-    #     queryset = super().get_queryset()
-    #     if self.request.user.is_staff or Mailing.owner == self.request.user:
-    #         return queryset
-    #     raise Http404
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        context_data['log_list'] = Logs.objects.all()
+        return context_data
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        if is_manager(self.request.user):
+            return queryset.filter(owner=self.request.user)
 
 
 class MailUpdateView(UpdateView):
@@ -162,6 +166,7 @@ class MailDeleteView(DeleteView):
 
 class LogsDetailView(DetailView):
     model = Logs
+    template_name = 'user/logs_detail.html'
 
 
 class LogsListView(ListView):
