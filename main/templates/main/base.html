@@ -238,12 +238,9 @@
             </svg>
           </a></li>
           <li class="navbar-brand"><a href="{% url 'main:general' %}" type="button" class="btn btn-success"><h2>MailMe</h2></a></li>
-          <li class="nav-item"><a class="nav-link" href="#">Возможности</a></li>
-          <li class="nav-item"><a class="nav-link" href="#">Цены</a></li>
-          <li class="nav-item"><a class="nav-link" href="#">Услуги</a></li>
-          <li class="nav-item"><a class="nav-link" href="#">Полезное</a></li>
-          <li class="nav-item"><a class="nav-link" href="#">О нас</a></li>
           {% if user.is_authenticated %}
+            <li><a href="{% url 'user:client_list' %}" type="button" class="btn btn-success">Клиенты</a></li>
+            <li><a href="{% url 'user:mail_list' %}" type="button" class="btn btn-success">Рассылки</a></li>
             <li><a href="{% url 'user:user_view' user.pk %}" type="button" class="btn btn-success">Профиль</a></li>
             <li><a href="{% url 'user:logout' %}" type="button" class="btn btn-success">Выйти</a></li>
           {% else %}

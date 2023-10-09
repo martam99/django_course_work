@@ -11,9 +11,9 @@
                 <div class="btn-group">
                     {% if object.owner %}
                         <a href="{% url 'user:mail_update' object.pk %}" type="button" class="btn btn-outline-primary">Редактировать</a>
-                        {% for object in log_list %}
+                        {% if log_list %}
                             <a href="{% url 'user:logs_view' object.pk %}" type="button" class="btn btn-outline-success">Посмотреть логи</a>
-                        {% endfor %}
+                        {% endif %}
                         <a href="{% url 'user:mail_detail' object.pk %}" type="button" class="btn btn-outline-dark">Посмотреть рассылку</a>
                         <a href="{% url 'user:mail_delete' object.pk %}" type="button" class="btn btn-outline-danger">Удалить</a>
                     {% endif %}

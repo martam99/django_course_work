@@ -134,7 +134,8 @@ class MailListView(ListView):
     def get_queryset(self):
         queryset = super().get_queryset()
         if is_manager(self.request.user):
-            return queryset.filter(owner=self.request.user)
+            return queryset
+        return queryset.filter(owner=self.request.user)
 
 
 class MailUpdateView(UpdateView):
